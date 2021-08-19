@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: busyboxtest
+spec:
+  selector:
+    matchLabels:
+      app: busyboxtest
+  template:
+    metadata:
+      labels:
+        app: busyboxtest
+    spec:
+      volumes:
+        - name: nfs-storage
+          persistentVolumeClaim:
+            claimName: nfs-pvc
+      containers:
+      - name: busyboxtest
+        image: busybox
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        volumeMounts:
+          - mountPath: /mnt/
+            name: nfs-storage

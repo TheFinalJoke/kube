@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pihole
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      app: pihole
+  template:
+    metadata:
+      labels:
+        app: pihole
+    spec:
+      containers:
+      - name: pihole
+        image: pihole/pihole
+        imagePullPolicy: Always
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        env:
+        - name: TZ
+          value: "America/Chicago"
+        - name: WEBPASSWORD
+          value: "Annkz+319331"
+        volumeMounts:
+        - name: piholeconf-local-volume
+          mountPath: "/etc/pihole"
+        - name: pihole-dnsmasq-volume
+          mountPath: "/etc/dnsmasq.d"
+      volumes:
+      - name: piholeconf-local-volume
+        persistentVolumeClaim:
+          claimName: piholeconf-local-claim
+      - name: pihole-dnsmasq-volume
+        persistentVolumeClaim:
+          claimName: piholednsmasq-local-claim
